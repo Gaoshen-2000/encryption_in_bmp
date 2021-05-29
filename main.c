@@ -4,27 +4,31 @@
 
 int main(void)
 {
-    //相关说明
+    //Directions of use
     printf( "Please be sure the files are in the same directory of this program.\n" );
     printf( "Press Enter to continue\n" );
     getchar();
-    //读取位图，19778判断大小，判断是否为24位位图，
+
+    //fopen the bmp file,
     char name_of_bitmap[100];
-    unsigned short fileType;//由特定代码判断是否为bmp图像
-    unsigned int offset;//判断偏移量是否符合要求，为54
-    int width;//图像宽度
-    int height;//图像高度
-    int maxsize;//宽*高*3
-    unsigned short bit_count;//仅支持24位位图
+    unsigned short fileType;//To Judge if the file is bmp. The value should be 0x4d42 for 24-bit bmp file.
+    unsigned int offset;//The offset of bmp should be 54.
+    int width;
+    int height;
+    int maxsize;//width*height*3
+    unsigned short bit_count;//The program now only support 24-bit bmp file.
 
     unsigned short flag;
     printf( "Enter the name of the .bmp file.\n" );
     scanf( "%s" , name_of_bitmap );
-    //可自动化添加后缀
-    //仅在位图名称中使用，文件名称后缀未知，不进行类似操作
-    //此处判断应使用strchr对.进行判断
-    //若判断".bmp"，则举例如下：
-    //若输入为a.docx,自动添加后缀后输出有问题，应为不是bitmap，实为不能打开
+    /*
+    Add the ".bmp" postfix if needed.
+    Only used here. For the other file, we do not know what type is it.
+
+    An example:
+    name_of_bitmap="a.docx", it will be changed to "a.docx.bmp" and can't be opened.
+    In this case, the output will wrongly be "Unable to open the bitmap." while the real situation is "It's not a bitmap file."
+    */
     if( strchr( name_of_bitmap , '.' ) == NULL )
     {
         strcat( name_of_bitmap , ".bmp" );
@@ -185,7 +189,7 @@ int main(void)
                 for( int j = 0 ; j < 8 ; j ++)
                     byte_file = 2 * byte_file + byte_with_bit[j];
                 fwrite( &byte_file , sizeof(unsigned char) , 1 , fp_file );
-                //每次循环八位，高位自动被替换
+                //Each cycle consists of eight bits, and the top position is automatically replaced.
                 //byte_file = 0;
                 fflush(fp_file);
                 index = 0;
